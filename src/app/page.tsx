@@ -65,8 +65,8 @@ export default function HomePage() {
               <span className="text-primary">family</span>.
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Compassionate, professional care in a licensed adult family home,
-              a real house in Federal Way&apos;s {site.address.neighborhood}.
+              Compassionate, professional adult family home in Federal
+              Way&apos;s {site.address.neighborhood}.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
@@ -85,7 +85,6 @@ export default function HomePage() {
             <Photo
               src="/images/living-room.jpg"
               alt="Sunlit shared living room at Tree Lane Adult Family Home"
-              caption="Our living room"
               priority
               sizes="(min-width: 1024px) 45vw, 100vw"
               className="aspect-[16/10]"
@@ -93,7 +92,6 @@ export default function HomePage() {
             <Photo
               src="/images/kitchen.jpg"
               alt="Home kitchen with granite island"
-              caption="Home kitchen"
               sizes="(min-width: 1024px) 45vw, 100vw"
               className="aspect-[16/10]"
             />
@@ -212,30 +210,26 @@ export default function HomePage() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Photo
-            src="/images/exterior.jpg"
-            alt="Single-story home with landscaped yard and wheelchair ramp"
-            caption="Welcoming home exterior"
+            src="/images/entry-hall.jpg"
+            alt="Wide tiled hallway with natural light"
             sizes="(min-width: 1024px) 23vw, (min-width: 640px) 50vw, 100vw"
             className="aspect-[4/3]"
           />
           <Photo
-            src="/images/bedroom.jpg"
-            alt="Bright private bedroom with a care bed and nightstand"
-            caption="Private resident bedroom"
+            src="/images/kitchen-dining.jpg"
+            alt="Open-plan kitchen flowing into the dining area"
             sizes="(min-width: 1024px) 23vw, (min-width: 640px) 50vw, 100vw"
             className="aspect-[4/3]"
           />
           <Photo
-            src="/images/bathroom.jpg"
-            alt="Wheelchair-accessible bathroom with grab bars and safety rails"
-            caption="Accessible bathroom"
+            src="/images/bedroom-2.jpg"
+            alt="Cozy bedroom with natural light and a dresser"
             sizes="(min-width: 1024px) 23vw, (min-width: 640px) 50vw, 100vw"
             className="aspect-[4/3]"
           />
           <Photo
-            src="/images/backyard.jpg"
-            alt="Spacious fenced backyard with large trees"
-            caption="Fenced backyard & lawn"
+            src="/images/living-room-2.jpg"
+            alt="Living room seating with recliners and an ottoman"
             sizes="(min-width: 1024px) 23vw, (min-width: 640px) 50vw, 100vw"
             className="aspect-[4/3]"
           />
