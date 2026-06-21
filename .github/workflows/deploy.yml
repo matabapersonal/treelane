@@ -87,12 +87,12 @@ jobs:
           set -eu
           tar -czf deploy.tar.gz -C deploy .
           ls -lh deploy.tar.gz
-          scp -P 6646 \
+          scp -P 22 \
             -i ~/.ssh/deploy_key \
             -o StrictHostKeyChecking=no \
             deploy.tar.gz \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:treelane/deploy.tar.gz
-          ssh -p 6646 \
+          ssh -p 22 \
             -i ~/.ssh/deploy_key \
             -o StrictHostKeyChecking=no \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
