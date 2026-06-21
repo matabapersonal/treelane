@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# cPanel deploy bundle (built by GitHub Actions, never committed)
+/deploy/
+/deploy.tar.gz
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -1,0 +1,96 @@
+name: Deploy Tree Lane to cPanel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js (standalone)
+        run: npm run build
+
+      - name: Stage deploy bundle
+        run: |
+          set -eu
+          rm -rf deploy
+          mkdir -p deploy/.next
+          # Next's standalone output: server.js, slim node_modules, rewritten package.json.
+          cp -a .next/standalone/. deploy/
+          # Standalone doesn't include static assets, so copy /public and /.next/static.
+          cp -a public/. deploy/public/
+          cp -a .next/static/. deploy/.next/static/
+
+          # Passenger expects a CommonJS app.js entry. Wrap Next's server.js
+          # with crash logging + an ESM fallback.
+          cat <<'EOF' > deploy/app.js
+          const fs = require('fs');
+          function logCrash(type, err) {
+            const msg = `[${new Date().toISOString()}] ${type}: ${err && err.stack ? err.stack : err}\n`;
+            fs.writeFileSync(__dirname + '/crash.log', msg, { flag: 'a' });
+          }
+          process.on('uncaughtException', (err) => logCrash('UNCAUGHT', err));
+          process.on('unhandledRejection', (err) => logCrash('UNHANDLED', err));
+          try {
+            require('./server.js');
+          } catch (err) {
+            if (err.code === 'ERR_REQUIRE_ESM' || err instanceof SyntaxError) {
+              logCrash('ESM_IMPORT_RETRY', 'Falling back to dynamic import');
+              import('./server.js').catch((e) => logCrash('DYNAMIC_IMPORT_ERROR', e));
+            } else {
+              logCrash('REQUIRE_ERROR', err);
+            }
+          }
+          EOF
+
+          # Strip "type": "module" so Passenger can require() app.js as CommonJS.
+          sed -i 's/"type": "module",\?//g' deploy/package.json
+
+          mkdir -p deploy/tmp
+          touch deploy/tmp/restart.txt
+          du -sh deploy
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      - name: Upload tarball & deploy
+        # scp uploads via the SFTP subsystem (works even when the interactive
+        # shell is jailed on cPanel). ssh runs a single non-interactive command
+        # line, which is typically allowed even with shell access locked down.
+        # NOTE: the remote dir 'treelane' must match the cPanel Node app's
+        # "Application root".
+        run: |
+          set -eu
+          tar -czf deploy.tar.gz -C deploy .
+          ls -lh deploy.tar.gz
+          scp -P 22 \
+            -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=no \
+            deploy.tar.gz \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:treelane/deploy.tar.gz
+          ssh -p 22 \
+            -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=no \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "cd treelane && tar -xzf deploy.tar.gz && rm deploy.tar.gz && mkdir -p tmp && touch tmp/restart.txt && echo 'Deploy complete'"
