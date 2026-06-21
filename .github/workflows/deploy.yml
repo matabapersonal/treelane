@@ -23,7 +23,10 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        # Use install (not ci): Tailwind v4's native deps (@emnapi, lightningcss
+        # oxide) have platform-specific optional packages that differ between a
+        # macOS-generated lockfile and the Linux runner, which trips npm ci.
+        run: npm install --no-audit --no-fund
 
       - name: Build Next.js (standalone)
         run: npm run build
