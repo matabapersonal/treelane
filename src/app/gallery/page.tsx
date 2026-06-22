@@ -61,22 +61,6 @@ const photos: GalleryPhoto[] = [
     src: "/images/bathroom.jpg",
     alt: "Wheelchair-accessible bathroom with grab bars and safety rails",
   },
-  {
-    src: "/images/deck.jpg",
-    alt: "Wood deck with outdoor seating beside sliding doors",
-  },
-  {
-    src: "/images/backyard.jpg",
-    alt: "Spacious fenced backyard with large trees",
-  },
-  {
-    src: "/images/exterior.jpg",
-    alt: "Front view: single-story home with a landscaped yard and wheelchair ramp",
-  },
-  {
-    src: "/images/exterior-rear.jpg",
-    alt: "Back view: rear of the home with a long accessibility ramp and deck",
-  },
 ];
 
 export default function GalleryPage() {

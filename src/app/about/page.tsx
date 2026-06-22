@@ -168,9 +168,9 @@ export default function AboutPage() {
       <section className="bg-surface-warm">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 md:py-20 lg:grid-cols-2">
           <Photo
-            src="/images/backyard.jpg"
-            alt="Spacious fenced backyard with large trees in a quiet neighborhood"
-            caption="Our peaceful, fenced backyard"
+            src="/images/dining-deck.jpg"
+            alt="Dining area with large windows looking out to leafy backyard trees"
+            caption="Leafy views from inside our home"
             sizes="(min-width: 1024px) 45vw, 100vw"
             className="aspect-[16/10]"
           />
